@@ -2,8 +2,9 @@ name: Build n2n for OpenWrt
 
 on:
   push:
-    branches:
-      - 'main'
+    paths:
+      - '**/*-n2n.version'
+
 
 env:
   IPKG_VERSION: 3.0.0
@@ -45,7 +46,7 @@ jobs:
 
     - name: Patch file
       run: |
-        git clone --depth 1 https://github.com/ntop/n2n -b 3.0 /tmp/n2n
+        git clone --depth 1 https://github.com/ntop/n2n -b dev /tmp/n2n
 
         url=${{ matrix.sdk_url }}
         sdk=$(basename $url | awk -F '.tar.xz' '{ print $1 }')
@@ -56,8 +57,8 @@ jobs:
         cd n2n
         rm -rf patches
 
-        sed -i 's/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=66f557af97b9c2ad42537516101fd04df2639ef0/g' Makefile
-        sed -i 's/PKG_VERSION:=.*/PKG_VERSION:=3.0.0/g' Makefile
+        sed -i 's/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=dev/g' Makefile
+        sed -i 's/PKG_VERSION:=.*/PKG_VERSION:=3.1.0-dev/g' Makefile
 
         # optimization
         sed -i '/package.mk/a CONFIGURE_ARGS += --with-openssl --with-zstd' Makefile
